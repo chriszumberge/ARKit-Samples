@@ -64,35 +64,34 @@ namespace SimpleSample
 
         public override void ViewWillAppear(bool animated)
         {
-            base.ViewWillAppear(animated);
+			base.ViewWillAppear(animated);
 
-            // Create a session configuration
-            var configuration = new ARWorldTrackingConfiguration
-            {
-                PlaneDetection = ARPlaneDetection.Horizontal,
-                LightEstimationEnabled = true
-            };
+			// Create a session configuration
+			var configuration = new ARWorldTrackingConfiguration
+			{
+				PlaneDetection = ARPlaneDetection.Horizontal,
+				LightEstimationEnabled = true
+			};
 
-            // Run the view's session
-            SceneView.Session.Run(configuration, ARSessionRunOptions.ResetTracking);
+			// Run the view's session
+			SceneView.Session.Run(configuration, ARSessionRunOptions.ResetTracking);
 
-            // FInd the ship and position it just in front of the camera
+            // Find the ship and position it just in front of the camera
             var ship = SceneView.Scene.RootNode.FindChildNode("ship", true);
 
-            ship.Position = new SCNVector3(2f, -2f, -9f);
-
+            //ship.Position = new SCNVector3(2f, -2f, -9f);
             //HACK: to see the jet move (circle around the viewer in a roll), comment out the ship.Position line above
             // and uncomment the code below (courtesy @lobrien)
 
-            //var animation = SCNAction.RepeatActionForever(SCNAction.RotateBy(0, (float)Math.PI, (float)Math.PI, (float)1));
-            //var pivotNode = new SCNNode { Position = new SCNVector3(0.0f, 2.0f, 0.0f) };
-            //pivotNode.RunAction(SCNAction.RepeatActionForever(SCNAction.RotateBy(0, -2, 0, 10)));
-            //ship.RemoveFromParentNode();
-            //pivotNode.AddChildNode(ship);
-            //SceneView.Scene.RootNode.AddChildNode(pivotNode);
-            //ship.Scale = new SCNVector3(0.1f, 0.1f, 0.1f);
-            //ship.Position = new SCNVector3(2f, -2f, -3f);
-            //ship.RunAction(SCNAction.RepeatActionForever(SCNAction.RotateBy(0, 0, 2, 1)));
+            var animation = SCNAction.RepeatActionForever(SCNAction.RotateBy(0, (float)Math.PI, (float)Math.PI, (float)1));
+            var pivotNode = new SCNNode { Position = new SCNVector3(0.0f, 2.0f, 0.0f) };
+            pivotNode.RunAction(SCNAction.RepeatActionForever(SCNAction.RotateBy(0, -2, 0, 10)));
+            ship.RemoveFromParentNode();
+            pivotNode.AddChildNode(ship);
+            SceneView.Scene.RootNode.AddChildNode(pivotNode);
+            ship.Scale = new SCNVector3(0.1f, 0.1f, 0.1f);
+            ship.Position = new SCNVector3(2f, -2f, -3f);
+            ship.RunAction(SCNAction.RepeatActionForever(SCNAction.RotateBy(0, 0, 2, 1)));
 
             //ENDHACK
         }
@@ -123,25 +122,27 @@ namespace SimpleSample
             // Release any cached data, images, etc that aren't in use.
         }
 
+        bool isRunning { get; set; } = false;
+
         private void HandleTap()
         {
             // Get the current frame
-            var currentFrame = SceneView.Session.CurrentFrame;
-            if (currentFrame == null) return;
+            //var currentFrame = SceneView.Session.CurrentFrame;
+            //if (currentFrame == null) return;
 
             // Create an image plane using a snapshot of the view
-            var imagePlane = SCNPlane.Create(SceneView.Bounds.Width / 6000, SceneView.Bounds.Height / 6000);
-            imagePlane.FirstMaterial.Diffuse.Contents = SceneView.Snapshot();
-            imagePlane.FirstMaterial.LightingModelName = SCNLightingModel.Constant;
+            //var imagePlane = SCNPlane.Create(SceneView.Bounds.Width / 6000, SceneView.Bounds.Height / 6000);
+            //imagePlane.FirstMaterial.Diffuse.Contents = SceneView.Snapshot();
+            //imagePlane.FirstMaterial.LightingModelName = SCNLightingModel.Constant;
 
             // Create a plane node and add it to the scene
-            var planeNode = SCNNode.FromGeometry(imagePlane);
-            SceneView.Scene.RootNode.AddChildNode(planeNode);
+            //var planeNode = SCNNode.FromGeometry(imagePlane);
+            //SceneView.Scene.RootNode.AddChildNode(planeNode);
 
             // Set transform of node to be 10cm in front of the camera
-            var translation = SCNMatrix4.CreateTranslation(0, 0, 0.1f);
-            var cameraTranslation = currentFrame.Camera.Transform.ToSCNMatrix4();
-            planeNode.Transform = SCNMatrix4.Mult(cameraTranslation, translation);
+            //var translation = SCNMatrix4.CreateTranslation(0, 0, 0.1f);
+            //var cameraTranslation = currentFrame.Camera.Transform.ToSCNMatrix4();
+            //planeNode.Transform = SCNMatrix4.Mult(cameraTranslation, translation);
         }
 
         private void AddAnchorToScene()
